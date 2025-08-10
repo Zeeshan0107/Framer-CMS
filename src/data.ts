@@ -18,70 +18,48 @@ export interface DataSource {
     items: FieldDataInput[]
 }
 
-export const dataSourceOptions = [
-    { id: "articles", name: "Articles" },
-    { id: "categories", name: "Categories" },
-] as const
 
-/**
- * Retrieve data and process it into a structured format.
- *
- * @example
- * {
- *   id: "articles",
- *   fields: [
- *     { id: "title", name: "Title", type: "string" },
- *     { id: "content", name: "Content", type: "formattedText" }
- *   ],
- *   items: [
- *     { title: "My First Article", content: "Hello world" },
- *     { title: "Another Article", content: "More content here" }
- *   ]
- * }
- */
 export async function getDataSource(dataSourceId: string, abortSignal?: AbortSignal): Promise<DataSource> {
-    // Fetch from your data source
-    const dataSourceResponse = await fetch(`/data/${dataSourceId}.json`, { signal: abortSignal })
-    const dataSource = await dataSourceResponse.json()
-
-    // Map your source fields to supported field types in Framer
-    const fields: ManagedCollectionFieldInput[] = []
-    for (const field of dataSource.fields) {
-        switch (field.type) {
-            case "string":
-            case "number":
-            case "boolean":
-            case "color":
-            case "formattedText":
-            case "date":
-            case "link":
-                fields.push({
-                    id: field.name,
-                    name: field.name,
-                    type: field.type,
-                })
-                break
-            case "image":
-            case "file":
-            case "enum":
-            case "collectionReference":
-            case "multiCollectionReference":
-                console.warn(`Support for field type "${field.type}" is not implemented in this Plugin.`)
-                break
-            default: {
-                console.warn(`Unknown field type "${field.type}".`)
-            }
-        }
+    // Call your remote API instead of local JSON
+    const response = await fetch("https://brain-stg.rotobot.ai/v1/articles", {
+                        signal: abortSignal,    
+                        headers: {
+                        Accept: "application/json",
+                        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6Imtsa0FxdE4zQmNTRlNsMzMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FyZG9ueWpqdHdsamZ6c3poY2tvLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIxZjE5YzQ5OS0xYzFhLTQ5MWEtYjM5NC1iYWI5MDMxNDgyOWUiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzU0NTY0MTUwLCJpYXQiOjE3NTQ1MzkxNTAsImVtYWlsIjoiIiwicGhvbmUiOiI5MjMwNjQ0OTAzNDMiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJwaG9uZSIsInByb3ZpZGVycyI6WyJwaG9uZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInBob25lX3ZlcmlmaWVkIjpmYWxzZSwic3ViIjoiMWYxOWM0OTktMWMxYS00OTFhLWIzOTQtYmFiOTAzMTQ4MjllIn0sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoib3RwIiwidGltZXN0YW1wIjoxNzUyNzY5NzE3fV0sInNlc3Npb25faWQiOiJlY2RjZjc2ZC0yYmFiLTQ1YzYtOWRmNC1jNjIxMmFmNTE4ZTEiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.2dMAsn-WVPk-dyjE3e5Aw9ZPSUaIoRg_sACzVYZvMmc", // if needed
+                        },
+                    });
+    const apiData = await response.json()
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data source: ${response.statusText}`)
     }
 
-    const items = dataSource.items as FieldDataInput[]
+    console.info("API Data:", apiData)
+
+    // Define supported fields manually (based on the API structure)
+    const fields: ManagedCollectionFieldInput[] = [
+        { id: "article_id", name: "article_id", type: "string" },
+        { id: "title", name: "Title", type: "string" },
+        { id: "date", name: "Date", type: "date" },
+        { id: "image", name: "Image", type: "image" },
+        { id: "content", name: "Content", type: "formattedText" },
+    ]
+
+    // Map API response into Framer's expected item format
+    const items: FieldDataInput[] = apiData.map((article: any) => ({
+        article_id: { type: "string", value: article.article_id },        
+        title: { type: "string", value: article.title },
+        date: { type: "date", value: article.date_created },
+        image: { type: "image", value: article.header_image_url },
+        content: { type: "formattedText", value: article.full_text },
+    }))
 
     return {
-        id: dataSource.id,
+        id: dataSourceId,
         fields,
         items,
     }
 }
+
 
 export function mergeFieldsWithExistingFields(
     sourceFields: readonly ManagedCollectionFieldInput[],

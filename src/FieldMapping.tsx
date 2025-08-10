@@ -1,6 +1,6 @@
 import { framer, type ManagedCollection, type ManagedCollectionFieldInput, useIsAllowedTo } from "framer-plugin"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { type DataSource, dataSourceOptions, mergeFieldsWithExistingFields, syncCollection, syncMethods } from "./data"
+import { type DataSource, mergeFieldsWithExistingFields, syncCollection, syncMethods } from "./data"
 
 interface FieldMappingRowProps {
     field: ManagedCollectionFieldInput
@@ -88,8 +88,8 @@ export function FieldMapping({ collection, dataSource, initialSlugFieldId }: Fie
         possibleSlugFields.find(field => field.id === initialSlugFieldId) ?? possibleSlugFields[0] ?? null
     )
 
-    const dataSourceName = dataSourceOptions.find(option => option.id === dataSource.id)?.name ?? dataSource.id
-
+    const dataSourceName = "articles"
+    
     useEffect(() => {
         const abortController = new AbortController()
 

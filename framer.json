@@ -1,6 +1,6 @@
 {
     "id": "72745a",
-    "name": "CMS Starter",
+    "name": "CMS Articles",
     "modes": ["configureManagedCollection", "syncManagedCollection"],
     "icon": "/icon.svg"
 }
