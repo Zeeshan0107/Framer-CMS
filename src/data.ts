@@ -25,7 +25,7 @@ export async function getDataSource(dataSourceId: string, abortSignal?: AbortSig
                         signal: abortSignal,    
                         headers: {
                         Accept: "application/json",
-                        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6Imtsa0FxdE4zQmNTRlNsMzMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FyZG9ueWpqdHdsamZ6c3poY2tvLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIxZjE5YzQ5OS0xYzFhLTQ5MWEtYjM5NC1iYWI5MDMxNDgyOWUiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzU0NTY0MTUwLCJpYXQiOjE3NTQ1MzkxNTAsImVtYWlsIjoiIiwicGhvbmUiOiI5MjMwNjQ0OTAzNDMiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJwaG9uZSIsInByb3ZpZGVycyI6WyJwaG9uZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInBob25lX3ZlcmlmaWVkIjpmYWxzZSwic3ViIjoiMWYxOWM0OTktMWMxYS00OTFhLWIzOTQtYmFiOTAzMTQ4MjllIn0sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoib3RwIiwidGltZXN0YW1wIjoxNzUyNzY5NzE3fV0sInNlc3Npb25faWQiOiJlY2RjZjc2ZC0yYmFiLTQ1YzYtOWRmNC1jNjIxMmFmNTE4ZTEiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.2dMAsn-WVPk-dyjE3e5Aw9ZPSUaIoRg_sACzVYZvMmc", // if needed
+                        Authorization: "Bearer ", // if needed
                         },
                     });
     const apiData = await response.json()
